@@ -1,17 +1,25 @@
 package model;
-import model.Participants;
-import model.Race;
+import repository.HasId;
 
-public class Registrations {
+public class Registrations implements HasId<Integer> {
+    private int registrationId;
+    private Race race;
+    private Participants participants;
 
-    Race race;
-    Participants participants;
-
-    public Registrations(Race race, Participants participants) {
+    public Registrations(int registrationId, Race race, Participants participants) {
+        this.registrationId = registrationId;
         this.race = race;
         this.participants = participants;
     }
 
+
+    public int getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(int registrationId) {
+        this.registrationId = registrationId;
+    }
 
     public Race getRace() {
         return race;
@@ -29,4 +37,17 @@ public class Registrations {
         this.participants = participants;
     }
 
+    @Override
+    public Participants getId() {
+        return null;
+    }
+
+    @Override
+    public void setId(Integer integer) {
+        this.registrationId = integer;
+    }
+
+    public void setId(Registrations registrations) {
+        registrations.setRegistrationId(registrationId);
+    }
 }

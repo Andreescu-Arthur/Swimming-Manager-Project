@@ -1,12 +1,25 @@
 package model;
 
-public class Participants {
-    int age;
-    String name;
+import repository.HasId;
 
-    public Participants(int age, String name) {
+public class Participants implements HasId<Integer> {
+    private int participantId;
+    private int age;
+    private String name;
+
+    public Participants(int age, String name, int participantId)
+    {
+        this.participantId = participantId;
         this.age = age;
         this.name = name;
+    }
+
+    public int getParticipantId() {
+        return participantId;
+    }
+
+    public void setParticipantId(int participantId) {
+        this.participantId = participantId;
     }
 
     public int getAge() {
@@ -24,4 +37,19 @@ public class Participants {
         this.name = name;
     }
 
+
+    @Override
+    public Participants getId() {
+        return null;
+    }
+
+    @Override
+    public void setId(Integer integer) {
+
+    }
+
+
+    public void setId(Participants participants) {
+        participants.setParticipantId(participantId);
+    }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="JavaAssignment" target="23" />
+      <module name="LabAssignment" target="21" />
+      <module name="LabAssignment.main" target="21" />
+      <module name="LabAssignment.test" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
