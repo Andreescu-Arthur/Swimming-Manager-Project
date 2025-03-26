@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ParticipantRepository implements IRepository<Integer, Participants> {
@@ -101,7 +102,7 @@ public class ParticipantRepository implements IRepository<Integer, Participants>
     }
 
     @Override
-    public Iterable<Participants> findAll() {
+    public Collection<Participants> findAll() {
         List<Participants> participants = new ArrayList<>();
         String sql = "SELECT * FROM Participants";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

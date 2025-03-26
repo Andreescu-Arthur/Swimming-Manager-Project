@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class RegistrationsRepository implements IRepository<Integer, Registrations> {
@@ -105,7 +106,7 @@ public class RegistrationsRepository implements IRepository<Integer, Registratio
     }
 
     @Override
-    public Iterable<Registrations> findAll() {
+    public Collection<Registrations> findAll() {
         List<Registrations> registrations = new ArrayList<>();
         String sql = "SELECT * FROM Registrations";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

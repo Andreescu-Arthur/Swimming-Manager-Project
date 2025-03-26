@@ -2,10 +2,17 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="demo" target="17" />
+      <module name="demo.main" target="17" />
+      <module name="demo.test" target="17" />
+      <module name="GraficalInterface" target="17" />
+      <module name="GraficalInterface.main" target="17" />
+      <module name="GraficalInterface.test" target="17" />
+      <module name="GUI" target="23" />
+      <module name="GUI.main" target="23" />
+      <module name="GUI.test" target="23" />
       <module name="JavaAssignment" target="23" />
-      <module name="LabAssignment" target="21" />
-      <module name="LabAssignment.main" target="21" />
-      <module name="LabAssignment.test" target="21" />
+      <module name="LabAssignment5" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>
