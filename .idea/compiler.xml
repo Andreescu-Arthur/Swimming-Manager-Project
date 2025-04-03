@@ -13,6 +13,8 @@
       <module name="GUI.test" target="23" />
       <module name="JavaAssignment" target="23" />
       <module name="LabAssignment5" target="21" />
+      <module name="LabAssignment5.main" target="21" />
+      <module name="LabAssignment5.test" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>

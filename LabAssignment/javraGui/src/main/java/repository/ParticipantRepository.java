@@ -3,18 +3,26 @@ package repository;
 import model.Participants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Component
 public class ParticipantRepository implements IRepository<Integer, Participants> {
     private static final Logger logger = LogManager.getLogger(ParticipantRepository.class); // Logger instance
     private Connection connection;
+    private Connect connect;
 
-    public ParticipantRepository(Connection connection) {
-        this.connection = connection;
+    public ParticipantRepository() {}
+
+    public ParticipantRepository(Connect connect) {
+        this.connect = connect;
+        this.connection = connect.getConnection();
     }
 
     @Override
@@ -116,5 +124,18 @@ public class ParticipantRepository implements IRepository<Integer, Participants>
             logger.error("Error fetching all participants: {}", e.getMessage()); // Log the error
         }
         return participants;
+    }
+
+    public int getLastInsertedId() {
+        String sql = "SELECT last_insert_rowid() AS id";
+        try (Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching last inserted ID: " + e.getMessage());
+        }
+        return -1;
     }
 }

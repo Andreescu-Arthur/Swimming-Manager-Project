@@ -3,18 +3,30 @@ package repository;
 import model.Race;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Component
 public class RaceRepository implements IRepository<Integer, Race> {
-    private static final Logger logger = LogManager.getLogger(RaceRepository.class); // Logger instance
-    private Connection connection;
+    //private static final Logger logger = LogManager.getLogger(RaceRepository.class); // Logger instance
+    private static final Logger logger = LogManager.getLogger(RaceRepository.class);
 
-    public RaceRepository(Connection connection) {
-        this.connection = connection;
+    private Connection connection;
+    private Connect connect;
+
+    public RaceRepository(Connect connect) {
+        this.connect = connect;
+        this.connection = connect.getConnection();
+    }
+
+
+    public RaceRepository() {
+
     }
 
     @Override
@@ -35,24 +47,47 @@ public class RaceRepository implements IRepository<Integer, Race> {
 
     @Override
     public void save(Race race) {
-        String sql = "INSERT INTO Races (distance, style, total_participants) VALUES (?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(1, race.getDistance());
-            statement.setString(2, race.getStyle());
-            statement.setInt(3, race.getTotalParticipants());
-            statement.executeUpdate();
+//        String sql = "INSERT INTO Races (distance, style, total_participants) VALUES (?, ?, ?)";
+//        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+//            statement.setInt(1, race.getDistance());
+//            statement.setString(2, race.getStyle());
+//            statement.setInt(3, race.getTotalParticipants());
+//            statement.executeUpdate();
+//
+//            // Retrieve the auto-generated race_id
+//            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+//                if (generatedKeys.next()) {
+//                    race.setRaceId(generatedKeys.getInt(1));
+//                }
+//            }
+//
+//            logger.info("Race saved: {}", race);
+//        } catch (SQLException e) {
+//            logger.error("Error saving race: {}", e.getMessage());
+//        }
 
-            // Retrieve the auto-generated race_id
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    race.setRaceId(generatedKeys.getInt(1));
+
+            String sql = "INSERT INTO Races (distance, style, total_participants) VALUES (?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setInt(1, race.getDistance());
+                statement.setString(2, race.getStyle());
+                statement.setInt(3, race.getTotalParticipants());
+                statement.executeUpdate();
+
+                // Retrieve the auto-generated race_id
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int generatedId = generatedKeys.getInt(1);
+                        race.setRaceId(generatedId);  // Set the ID for the object
+                        System.out.println("Inserted race with ID: " + generatedId);
+                    }
                 }
+
+            } catch (SQLException e) {
+                System.err.println("Error saving race: " + e.getMessage());
             }
 
-            logger.info("Race saved: {}", race);
-        } catch (SQLException e) {
-            logger.error("Error saving race: {}", e.getMessage());
-        }
+
     }
 
     @Override
@@ -104,19 +139,44 @@ public class RaceRepository implements IRepository<Integer, Race> {
         return null;
     }
 
+    public int getParticipantCountForRace(int raceId) {
+        String sql = "SELECT COUNT(*) AS count FROM Registrations WHERE race_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, raceId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching participant count: " + e.getMessage());
+        }
+        return 0;
+    }
+
     @Override
     public Collection<Race> findAll() {
         List<Race> races = new ArrayList<>();
-        String sql = "SELECT * FROM Races";
-        try (Statement statement = connection.createStatement()) {
-            ResultSet rs = statement.executeQuery(sql);
+        String sql = """
+        SELECT r.race_id, r.distance, r.style, 
+               (SELECT COUNT(*) FROM Registrations reg WHERE reg.race_id = r.race_id) AS total_participants
+        FROM Races r
+    """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet rs = statement.executeQuery()) {
+
             while (rs.next()) {
-                Race race = new Race(rs.getInt("race_id"), rs.getInt("distance"), rs.getString("style"), rs.getInt("totalParticipants"));
-                races.add(race);
+                int raceId = rs.getInt("race_id");
+                int distance = rs.getInt("distance");
+                String style = rs.getString("style");
+                int totalParticipants = rs.getInt("total_participants");
+
+                System.out.println("Race loaded: ID=" + raceId + ", Distance=" + distance + ", Style=" + style + ", Participants=" + totalParticipants);
+                races.add(new Race(raceId, distance, style, totalParticipants));
             }
-            logger.info("Fetched {} races", races.size()); // Log the number of races fetched
+
         } catch (SQLException e) {
-            logger.error("Error fetching all races: {}", e.getMessage()); // Log the error
+            System.err.println("Error fetching races: " + e.getMessage());
         }
         return races;
     }

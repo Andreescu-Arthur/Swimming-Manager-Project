@@ -13,11 +13,10 @@ public class Participants implements HasId<Integer> {
         this.name = name;
     }
 
-    public Participants(int age, String name, int participantId)
-    {
+    public Participants(int participantId, String name, int age) {
         this.participantId = participantId;
-        this.age = age;
         this.name = name;
+        this.age = age;
     }
 
     public int getParticipantId() {

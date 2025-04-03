@@ -5,19 +5,26 @@ import model.Race;
 import model.Registrations;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Component
 public class RegistrationsRepository implements IRepository<Integer, Registrations> {
     private static final Logger logger = LogManager.getLogger(RegistrationsRepository.class); // Logger instance
     private Connection connection;
+    private Connect connect;
 
-    public RegistrationsRepository(Connection connection) {
-        this.connection = connection;
+    public RegistrationsRepository(Connect connect) {
+        this.connect = connect;
+        connection = connect.getConnection();
     }
+
+    public RegistrationsRepository(){}
 
     @Override
     public int size() {
@@ -89,8 +96,8 @@ public class RegistrationsRepository implements IRepository<Integer, Registratio
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                Participants participant = new ParticipantRepository(connection).findOne(rs.getInt("participant_id"));
-                Race race = new RaceRepository(connection).findOne(rs.getInt("race_id"));
+                Participants participant = new ParticipantRepository(connect).findOne(rs.getInt("participant_id"));
+                Race race = new RaceRepository(connect).findOne(rs.getInt("race_id"));
                 Registrations registration = new Registrations(
                         rs.getInt("registration_id"),
                         race,
@@ -112,8 +119,8 @@ public class RegistrationsRepository implements IRepository<Integer, Registratio
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Participants participant = new ParticipantRepository(connection).findOne(rs.getInt("participant_id"));
-                Race race = new RaceRepository(connection).findOne(rs.getInt("race_id"));
+                Participants participant = new ParticipantRepository(connect).findOne(rs.getInt("participant_id"));
+                Race race = new RaceRepository(connect).findOne(rs.getInt("race_id"));
                 registrations.add(new Registrations(rs.getInt("registrations_id"), race, participant));
             }
             logger.info("Fetched {} registrations", registrations.size()); // Log the number of registrations fetched
@@ -121,6 +128,29 @@ public class RegistrationsRepository implements IRepository<Integer, Registratio
             logger.error("Error fetching all registrations: {}", e.getMessage()); // Log the error
         }
         return registrations;
+    }
+
+
+    public List<Participants> findParticipantsByRaceId(int raceId) {
+        List<Participants> participants = new ArrayList<>();
+        String sql = "SELECT p.participant_id, p.name, p.age FROM Participants p " +
+                "JOIN Registrations r ON p.participant_id = r.participant_id " +
+                "WHERE r.race_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, raceId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Participants participant = new Participants(
+                        rs.getInt("participant_id"),  // ✅ Ensuring correct ID mapping
+                        rs.getString("name"),
+                        rs.getInt("age")
+                );
+                participants.add(participant);
+            }
+        } catch (SQLException e) {
+            logger.error("Error fetching participants for race: {}", e.getMessage());
+        }
+        return participants;
     }
 
 
