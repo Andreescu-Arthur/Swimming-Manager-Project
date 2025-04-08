@@ -2,6 +2,7 @@ package network;
 
 import javafx.application.Platform;
 import org.example.javragui.HelloController;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,13 +10,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-// ClientConnection.java
+
 public class ClientConnection {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
-    private HelloController controller; // reference to your UI controller
-
+    private HelloController controller;
     public ClientConnection(String host, int port, HelloController controller) {
         this.controller = controller;
         try {
@@ -27,9 +27,12 @@ public class ClientConnection {
             listener.setDaemon(true);
             listener.start();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            out = new PrintWriter(System.out);
+            in = new BufferedReader(new InputStreamReader(System.in));
         }
     }
+
 
     public void sendMessage(String msg) {
         out.println(msg);
