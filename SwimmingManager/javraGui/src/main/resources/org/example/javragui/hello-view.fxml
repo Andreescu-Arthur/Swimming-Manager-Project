@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="544.0" prefWidth="943.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javragui.HelloController">
+   <children>
+      <TableView fx:id="raceTable" layoutX="37.0" layoutY="27.0" prefHeight="245.0" prefWidth="381.0">
+        <columns>
+          <TableColumn fx:id="raceIdColumn" prefWidth="64.0" text="Race ID" />
+          <TableColumn fx:id="distanceColumn" prefWidth="88.0" text="Distance" />
+            <TableColumn fx:id="styleColumn" prefWidth="120.0" text="Style" />
+            <TableColumn fx:id="totalParticipantsColumn" prefWidth="108.0" text="Total Participants" />
+        </columns>
+      </TableView>
+      <TableView fx:id="participantTable" layoutX="37.0" layoutY="290.0" prefHeight="228.0" prefWidth="381.0">
+        <columns>
+          <TableColumn fx:id="participantIdColumn" prefWidth="74.0" text="ID" />
+          <TableColumn fx:id="nameColumn" prefWidth="214.0" text="Name" />
+            <TableColumn fx:id="ageColumn" prefWidth="92.0" text="Age" />
+        </columns>
+      </TableView>
+      <Button fx:id="addParticipantButton" layoutX="758.0" layoutY="247.0" mnemonicParsing="false" text="Add Participant" />
+      <TextField fx:id="nameText" layoutX="561.0" layoutY="89.0" prefHeight="25.0" prefWidth="246.0" promptText="Enter name" />
+      <TextField fx:id="ageText" layoutX="561.0" layoutY="137.0" prefHeight="25.0" prefWidth="246.0" promptText="Enter age" />
+      <Label layoutX="458.0" layoutY="93.0" text="Name" />
+      <Label layoutX="458.0" layoutY="141.0" text="Age" />
+   </children>
+</AnchorPane>

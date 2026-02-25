@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option java_package = "com.example.grpc";
+option java_multiple_files = true;
+option java_outer_classname = "ParticipantProto";
+option csharp_namespace = "Competition.Grpc";
+
+package competition;
+
+service ParticipantService {
+  rpc AddParticipant (AddParticipantRequest) returns (AddParticipantResponse);
+  rpc GetParticipants (Empty) returns (ParticipantsList);
+  rpc SubscribeUpdates (Empty) returns (stream ParticipantsList);
+
+
+  rpc GetAllRaces (Empty) returns (RacesList);
+  rpc GetParticipantsForRace (RaceIdRequest) returns (ParticipantsList);
+}
+
+message AddParticipantRequest {
+  string name = 1;
+  int32 age = 2;
+  int32 raceId = 3;
+}
+
+message AddParticipantResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message Participant {
+  int32 id = 1;
+  string name = 2;
+  int32 age = 3;
+  int32 raceId = 4;
+}
+
+message ParticipantsList {
+  repeated Participant participants = 1;
+}
+
+message Race {
+  int32 raceId = 1;
+  int32 distance = 2;
+  string style = 3;
+  int32 totalParticipants = 4;
+}
+
+message RacesList {
+  repeated Race races = 1;
+}
+
+message RaceIdRequest {
+  int32 raceId = 1;
+}
+
+message Empty {}

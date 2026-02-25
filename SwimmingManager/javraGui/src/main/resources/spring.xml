@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="connect" class="repository.Connect"/>
+<!--    <bean id="connection" factory-bean="connect" factory-method="getConnection"/>-->
+
+   <!-- <bean id="clientController" class="network.ClientConnection"/>-->
+
+    <bean id="raceRepository" class="repository.RaceRepository">
+        <constructor-arg ref="connect"/>
+    </bean>
+
+    <bean id="participantRepository" class="repository.ParticipantRepository">
+        <constructor-arg ref="connect"/>
+    </bean>
+
+    <bean id="registrationRepository" class="repository.RegistrationsRepository">
+        <constructor-arg ref="connect"/>
+    </bean>
+
+
+    <bean id="raceBackEndService" class="services.RaceService">
+        <constructor-arg ref="raceRepository"/>
+    </bean>
+
+    <bean id="participantBackEndService" class="services.ParticipantsService">
+        <constructor-arg ref="participantRepository"/>
+    </bean>
+
+    <bean id="registrationBackEndService" class="services.RegistrationsService">
+        <constructor-arg ref="registrationRepository"/>
+    </bean>
+
+</beans>
